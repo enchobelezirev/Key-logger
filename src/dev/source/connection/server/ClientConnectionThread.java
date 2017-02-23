@@ -8,8 +8,9 @@ public class ClientConnectionThread extends Thread {
 	private String clientName;
 	private volatile boolean isServerRunning;
 
-	public ClientConnectionThread(Socket socket) {
+	public ClientConnectionThread(Socket socket, String clientName) {
 		this.socket = socket;
+		this.clientName = clientName;
 		isServerRunning = true;
 	}
 
@@ -24,8 +25,8 @@ public class ClientConnectionThread extends Thread {
 		isServerRunning = false;
 		if (socket != null) {
 			try {
-				socket.close();
 				System.out.println(clientName + " , " + socket.getInetAddress() + " disconected!");
+				socket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

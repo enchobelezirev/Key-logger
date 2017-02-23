@@ -3,16 +3,13 @@ package dev.source.connection.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import dev.source.connection.client.Client;
 
 public class Server implements AutoCloseable {
 	public static final int SERVER_PORT = 10513;
-	public static Set<String> clientNames;
 
 	private List<ClientConnectionThread> clients;
 	private ServerSocket serverSocket;
@@ -23,8 +20,6 @@ public class Server implements AutoCloseable {
 
 	public Server(int serverPort) {
 		clients = new LinkedList<ClientConnectionThread>();
-		clientNames = new HashSet<>();
-		clientNames.add(Client.getClientUniqueUsername());
 		serverInit(serverPort);
 	}
 
@@ -41,9 +36,10 @@ public class Server implements AutoCloseable {
 	public void start() throws Exception {
 		while (true) {
 			Socket clientSocket = serverSocket.accept();
-			ClientConnectionThread clientConnectionThread = new ClientConnectionThread(clientSocket);
+			ClientConnectionThread clientConnectionThread = new ClientConnectionThread(clientSocket,
+					Client.getClientUsername());
 			clients.add(clientConnectionThread);
-			System.out.println("\t |-> Client " + clientConnectionThread.getClientName() + " with IP "
+			System.out.println("\t" + clientConnectionThread.getClientName() + " with IP "
 					+ clientConnectionThread.getSocket().getInetAddress() + " connected to the server!");
 			clientConnectionThread.setDaemon(true);
 			clientConnectionThread.start();
@@ -59,7 +55,6 @@ public class Server implements AutoCloseable {
 			clientConnectionThread.stopClientThread();
 		}
 		clients.clear();
-		clientNames.clear();
 		System.out.println(SERVER_SHUTDOWN_NOTIFICATION);
 	}
 

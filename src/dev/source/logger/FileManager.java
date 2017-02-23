@@ -46,7 +46,7 @@ public class FileManager implements AutoCloseable {
 		}
 	}
 
-	public void log(String string) {
+	synchronized public void log(String string) {
 		System.out.println("log" + " " + string);
 		printWriter.write(string);
 	}

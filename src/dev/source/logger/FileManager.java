@@ -8,24 +8,24 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
-public class FileWriter implements AutoCloseable {
+public class FileManager implements AutoCloseable {
 	private static final boolean AUTO_FLUSH = true;
-	private static FileWriter fileManagerInstance = null;
+	private static FileManager fileManagerInstance = null;
 	private static final boolean ATTRIBUTE_VALUE = true;
 	private static final boolean APPEND = true;
 	private static final String FILE_LOCATION = "C:\\Users\\Default\\AppData\\log.txt";
 	private static PrintWriter printWriter;
 	private static File file;
 
-	private FileWriter() {
+	private FileManager() {
 		// Exists only to defeat instantiation.
 	}
 
-	synchronized public static FileWriter getInstance() throws IOException {
+	synchronized public static FileManager getInstance() throws IOException {
 		if (fileManagerInstance == null) {
 			initialize();
 			// hide(file);
-			fileManagerInstance = new FileWriter();
+			fileManagerInstance = new FileManager();
 		}
 		return fileManagerInstance;
 	}
@@ -47,6 +47,7 @@ public class FileWriter implements AutoCloseable {
 	}
 
 	public void log(String string) {
+		System.out.println("log" + " " + string);
 		printWriter.write(string);
 	}
 

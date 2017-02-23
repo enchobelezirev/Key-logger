@@ -14,8 +14,12 @@ public class Server implements AutoCloseable {
 	public static final int SERVER_PORT = 10513;
 	public static Set<String> clientNames;
 
-	private ServerSocket serverSocket;
 	private List<ClientConnectionThread> clients;
+	private ServerSocket serverSocket;
+
+	private static final String SERVER_SHUTDOWN_NOTIFICATION = "|> SERVER SHUT DOWN";
+	private static final String SERVER_RUNNING_NOTIFICATION = "|> THE SERVER IS RUNNING ON PORT ";
+	private static final String SERVER_INITIALIZING_NOTIFICATION = "|> SERVER INITIALIZING...";
 
 	public Server(int serverPort) {
 		clients = new LinkedList<ClientConnectionThread>();
@@ -25,13 +29,13 @@ public class Server implements AutoCloseable {
 	}
 
 	private void serverInit(int serverPort) {
-		System.out.println("Server initializing...");
+		System.out.println(SERVER_INITIALIZING_NOTIFICATION);
 		try {
 			serverSocket = new ServerSocket(serverPort);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("The server is running on port " + serverPort);
+		System.out.println(SERVER_RUNNING_NOTIFICATION + serverPort);
 	}
 
 	public void start() throws Exception {
@@ -39,7 +43,7 @@ public class Server implements AutoCloseable {
 			Socket clientSocket = serverSocket.accept();
 			ClientConnectionThread clientConnectionThread = new ClientConnectionThread(clientSocket);
 			clients.add(clientConnectionThread);
-			System.out.println("Client " + clientConnectionThread.getClientName() + " with IP "
+			System.out.println("\t |-> Client " + clientConnectionThread.getClientName() + " with IP "
 					+ clientConnectionThread.getSocket().getInetAddress() + " connected to the server!");
 			clientConnectionThread.setDaemon(true);
 			clientConnectionThread.start();
@@ -56,6 +60,7 @@ public class Server implements AutoCloseable {
 		}
 		clients.clear();
 		clientNames.clear();
+		System.out.println(SERVER_SHUTDOWN_NOTIFICATION);
 	}
 
 	public static void main(String[] args) {

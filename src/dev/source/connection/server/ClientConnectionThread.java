@@ -16,7 +16,7 @@ public class ClientConnectionThread extends Thread {
 	@Override
 	public void run() {
 		while (isServerRunning) {
-
+			// TODO
 		}
 	}
 
@@ -25,6 +25,7 @@ public class ClientConnectionThread extends Thread {
 		if (socket != null) {
 			try {
 				socket.close();
+				System.out.println(clientName + " , " + socket.getInetAddress() + " disconected!");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

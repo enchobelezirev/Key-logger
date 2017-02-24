@@ -1,4 +1,4 @@
-# Key-logger
+# Key logger
 ###OVERVIEW
 * Java SE based project that allows the server to collect data (keystrokes) secretly 
 	from the clients. Each client stores the date locally (in hidden file) and if the local file

